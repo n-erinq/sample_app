@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   def new
+    debugger
   end
 
   def show
