@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
     if user&.authenticate(params[:session][:password])
       # ユーザーログイン後にユーザー情報のページにリダイレクトする
        reset_session      # ログインの直前に必ずこれを書くこと
+       remember user
        log_in user
        redirect_to user
     else

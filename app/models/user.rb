@@ -16,6 +16,7 @@ class User < ApplicationRecord
     BCrypt::Password.create(string, cost: cost)
   end
 
+  # ランダムなトークンを返す
   def User.new_token
     SecureRandom.urlsafe_base64
   end
@@ -24,6 +25,11 @@ class User < ApplicationRecord
   def remember
     self.remember_token = User.new_token
     update_attribute(:remember_digest, User.digest(remember_token))
+  end
+
+  # 渡されたトークンがダイジェストと一致したらtrueを返す
+  def authenticated?(remember_token)
+    BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
 end
 
