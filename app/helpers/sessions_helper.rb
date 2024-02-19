@@ -3,6 +3,9 @@ module SessionsHelper
   # 渡されたユーザーでログインする
   def log_in(user)
     session[:user_id] = user.id
+    # セッションリプレイ攻撃から保護する
+    # 詳しくは https://techracho.bpsinc.jp/hachi8833/2023_06_02/130443 を参照
+    session[:session_token] = user.session_token
   end
 
   # 永続的セッションのためにユーザーをデータベースに記憶する
