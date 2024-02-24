@@ -15,10 +15,13 @@ module SessionsHelper
     cookies.permanent[:remember_token] = user.remember_token
   end
 
-  # 記憶トークンcookieに対応するユーザーを返す
+  # 記憶トークンのcookieに対応するユーザーを返す
   def current_user
     if (user_id = session[:user_id])
-      @current_user ||= User.find_by(id: user_id)
+      user = User.find_by(id: user_id)
+      if user && session[:session_token] == user.session_token
+        @current_user = user
+      end
     elsif (user_id = cookies.encrypted[:user_id])
       user = User.find_by(id: user_id)
       if user && user.authenticated?(cookies[:remember_token])
@@ -26,6 +29,11 @@ module SessionsHelper
         @current_user = user
       end
     end
+  end
+
+  # 渡されたユーザーがカレントユーザーであればtrueを返す
+  def current_user?(user)
+    user && user == current_user
   end
 
   # ユーザーがログインしていればtrue、その他ならfalseを返す
